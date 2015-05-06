@@ -8,14 +8,17 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 ''
-' Base for setting up authenticator v2.0.6
+' Title v3.0.0
+' (c) Name
 '
-' @implements: IAuthenticator v3.*
-' @author:
-' @license:
+' Description
 '
-' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '
-Implements IAuthenticator
+' @class
+' @implements IWebAuthenticator v4.*
+' @author
+' @license
+'' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '
+Implements IWebAuthenticator
 Option Explicit
 
 ' ============================================= '
@@ -24,53 +27,50 @@ Option Explicit
 
 ''
 ' Setup authenticator
-' --------------------------------------------- '
-
+''
 Public Sub Setup()
     ' Define any user-specific variables needed for authentication
 End Sub
 
-' ============================================= '
-' Private Methods
-' ============================================= '
-
 ''
 ' Hook for taking action before a request is executed
 '
-' @param {RestClient} Client The client that is about to execute the request
-' @param {RestRequest} Request The request about to be executed
-' --------------------------------------------- '
-
-Private Sub IAuthenticator_BeforeExecute(ByVal Client As RestClient, ByRef Request As RestRequest)
-    ' Add headers, cookies, etc to `Request` before it is executed
-    ' (Leave blank to pass Request through unmodified)
+' @param {WebClient} Client The client that is about to execute the request
+' @param in|out {WebRequest} Request The request about to be executed
+''
+Private Sub IWebAuthenticator_BeforeExecute(ByVal Client As WebClient, ByRef Request As WebRequest)
+    ' e.g Add headers, cookies, etc.
 End Sub
 
 ''
 ' Hook for taking action after request has been executed
 '
-' @param {RestClient} Client The client that executed request
-' @param {RestRequest} Request The request that was just executed
-' @param {RestResponse} Response to request
-' --------------------------------------------- '
-
-Private Sub IAuthenticator_AfterExecute(ByVal Client As RestClient, ByVal Request As RestRequest, ByRef Response As RestResponse)
-    ' Handle 401 Unauthorized or other issues
+' @param {WebClient} Client The client that executed request
+' @param {WebRequest} Request The request that was just executed
+' @param in|out {WebResponse} Response to request
+''
+Private Sub IWebAuthenticator_AfterExecute(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Response As WebResponse)
+    ' e.g. Handle 401 Unauthorized or other issues
 End Sub
 
 ''
-' Hook for overriding standard http open (used for HTTP Basic)
+' Hook for updating http before send
 '
-' @param {MSXML2.IXMLHTTPRequest} http
-' @parma {RestClient} Client The client that is about to open request
-' @param {RestRequest} Request The request about to be opened
-' @param {String} BaseUrl
-' @param {Boolean} [useAsync=False]
-' --------------------------------------------- '
+' @param {WebClient} Client
+' @param {WebRequest} Request
+' @param in|out {WinHttpRequest} Http
+''
+Private Sub IWebAuthenticator_PrepareHttp(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Http As Object)
+    ' e.g. Update option, headers, etc.
+End Sub
 
-Private Sub IAuthenticator_HttpOpen(ByRef Http As Object, ByVal Client As RestClient, ByRef Request As RestRequest, BaseUrl As String, Optional UseAsync As Boolean = False)
-    ' Use modified http open (if necessary)
-
-    ' Perform standard http open
-    Call Http.Open(Request.MethodName(), Request.FullUrl(BaseUrl), UseAsync)
+''
+' Hook for updating cURL before send
+'
+' @param {WebClient} Client
+' @param {WebRequest} Request
+' @param in|out {String} Curl
+''
+Private Sub IWebAuthenticator_PrepareCurl(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Curl As String)
+    ' e.g. Add flags to cURL
 End Sub

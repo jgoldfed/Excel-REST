@@ -2,20 +2,21 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "SpecAuthenticator"
+Attribute VB_Name = "IWebAuthenticator"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 ''
-' Spec Authenticator
+' IWebAuthenticator v4.0.9
+' (c) Tim Hall - https://github.com/VBA-tools/VBA-Web
 '
-' @class SpecAuthenticator
-' @implements IWebAuthenticator v4.*
-' @author Tim Hall
-' @license MIT
+' Interface for creating authenticators for rest client
+'
+' @class IWebAuthenticator
+' @author tim.hall.engr@gmail.com
+' @license MIT (http://www.opensource.org/licenses/mit-license.php)
 '' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ '
-Implements IWebAuthenticator
 Option Explicit
 
 ' ============================================= '
@@ -23,60 +24,48 @@ Option Explicit
 ' ============================================= '
 
 ''
-' Setup authenticator
-''
-Public Sub Setup()
-    ' Define any user-specific variables needed for authentication
-End Sub
-
-''
 ' Hook for taking action before a request is executed
 '
+' @method BeforeExecute
 ' @param {WebClient} Client The client that is about to execute the request
 ' @param in|out {WebRequest} Request The request about to be executed
 ''
-Private Sub IWebAuthenticator_BeforeExecute(ByVal Client As WebClient, ByRef Request As WebRequest)
-    ' It should:
-    ' Add parameter, header, cookie, content-type
-    Request.AddBodyParameter "auth_parameter", "auth"
-    Request.AddQuerystringParam "auth_query", "auth"
-    Request.ContentType = "text/plain"
-    Request.AddHeader "X-Custom-A", "auth"
-    Request.AddCookie "auth_cookie", "auth"
+Public Sub BeforeExecute(ByVal Client As WebClient, ByRef Request As WebRequest)
+    ' e.g Add headers, cookies, etc.
 End Sub
 
 ''
 ' Hook for taking action after request has been executed
 '
+' @method AfterExecute
 ' @param {WebClient} Client The client that executed request
 ' @param {WebRequest} Request The request that was just executed
 ' @param in|out {WebResponse} Response to request
 ''
-Private Sub IWebAuthenticator_AfterExecute(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Response As WebResponse)
-    ' It should:
-    ' Update response
-    Response.StatusCode = 204
+Public Sub AfterExecute(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Response As WebResponse)
+    ' e.g. Handle 401 Unauthorized or other issues
 End Sub
 
 ''
 ' Hook for updating http before send
 '
+' @method PrepareHttp
 ' @param {WebClient} Client
 ' @param {WebRequest} Request
 ' @param in|out {WinHttpRequest} Http
 ''
-Private Sub IWebAuthenticator_PrepareHttp(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Http As Object)
+Public Sub PrepareHttp(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Http As Object)
     ' e.g. Update option, headers, etc.
 End Sub
 
 ''
 ' Hook for updating cURL before send
 '
+' @method PrepareCurl
 ' @param {WebClient} Client
 ' @param {WebRequest} Request
 ' @param in|out {String} Curl
 ''
-Private Sub IWebAuthenticator_PrepareCurl(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Curl As String)
+Public Sub PrepareCurl(ByVal Client As WebClient, ByVal Request As WebRequest, ByRef Curl As String)
     ' e.g. Add flags to cURL
 End Sub
-
